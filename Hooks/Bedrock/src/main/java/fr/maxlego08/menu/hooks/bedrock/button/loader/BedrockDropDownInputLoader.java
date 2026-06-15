@@ -3,6 +3,8 @@ package fr.maxlego08.menu.hooks.bedrock.button.loader;
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.button.DefaultButtonValue;
 import fr.maxlego08.menu.api.loader.ButtonLoader;
+import fr.maxlego08.menu.api.localization.LocalizedText;
+import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.api.utils.dialogs.record.SingleOption;
 import fr.maxlego08.menu.hooks.bedrock.button.buttons.ZBedrockDropDownInput;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,11 +40,17 @@ public class BedrockDropDownInputLoader extends ButtonLoader {
                     initialAlreadySet = true;
                 }
 
-                SingleOption singleOption = new SingleOption(id, display, initialValue);
+                SingleOption singleOption = new SingleOption(id, display, initialValue, localizedText(configuration, optionPath + ".display", display));
                 singleOptionList.add(singleOption);
             }
         }
 
-        return new ZBedrockDropDownInput(label, singleOptionList);
+        return (Button) new ZBedrockDropDownInput(label, singleOptionList)
+                .setLocalizedLabel(localizedText(configuration, path + ".text", label));
+    }
+
+    private LocalizedText localizedText(YamlConfiguration configuration, String path, String legacyValue) {
+        Object object = configuration.isConfigurationSection(path) ? configuration.getConfigurationSection(path) : configuration.get(path);
+        return LocalizedTextParser.text(object, legacyValue);
     }
 }

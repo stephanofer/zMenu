@@ -27,7 +27,7 @@ public class DropdownInputBuilder extends BedrockBuilderInput<MenuPlugin> {
 
     @Override
     public @NotNull Component build(@NotNull Player player, @NotNull InputButton button, @NotNull Placeholders placeholders) {
-        String text = this.plugin.parse(player, placeholders.parse(button.getLabel()));
+        String text = this.plugin.parse(player, placeholders.parse(button.getLabel(player)));
         List<SingleOption> optionList = button.getSigleOptions();
 
         List<String> options = new ArrayList<>();
@@ -35,7 +35,7 @@ public class DropdownInputBuilder extends BedrockBuilderInput<MenuPlugin> {
         if (optionList != null) {
             for (int i = 0; i < optionList.size(); i++) {
                 SingleOption option = optionList.get(i);
-                options.add(this.plugin.parse(player, placeholders.parse(option.display())));
+                options.add(this.plugin.parse(player, placeholders.parse(option.display(player))));
                 if (option.initialValue()) {
                     defaultOption = i;
                 }

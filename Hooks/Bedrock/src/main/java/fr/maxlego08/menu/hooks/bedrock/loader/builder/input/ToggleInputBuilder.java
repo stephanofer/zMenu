@@ -23,8 +23,8 @@ public class ToggleInputBuilder extends BedrockBuilderInput<MenuPlugin> {
 
     @Override
     public @NotNull Component build(@NotNull Player player, @NotNull InputButton button, @NotNull Placeholders placeholders) {
-        String text = this.plugin.parse(player, placeholders.parse(button.getLabel()));
-        boolean initialValue = Boolean.parseBoolean(this.plugin.parse(player, placeholders.parse(button.getInitialValueBool())));
+        String text = this.plugin.parse(player, placeholders.parse(button.getLabel(player)));
+        boolean initialValue = Boolean.parseBoolean(this.plugin.parse(player, placeholders.parse(button.getInitialValueBool(player))));
 
         return ToggleComponent.of(this.metaUpdater.getLegacyMessage(text), initialValue);
     }

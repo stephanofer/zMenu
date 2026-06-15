@@ -253,8 +253,8 @@ public class ZBedrockManager extends BedrockBuilderManager implements BedrockMan
                 ModalForm.Builder builder = ModalForm.builder()
                         .title(this.metaUpdater.getLegacyMessage(inventory.getName(player, this.inventoryManager.getFakeInventory(), placeholders)))
                         .content(this.metaUpdater.getLegacyMessage(inventory.getContent(player)))
-                        .button1(this.metaUpdater.getLegacyMessage(this.menuPlugin.parse(player, buttons.get(0).getText(placeholders))))
-                        .button2(this.metaUpdater.getLegacyMessage(this.menuPlugin.parse(player, buttons.get(1).getText(placeholders))))
+                        .button1(this.metaUpdater.getLegacyMessage(this.menuPlugin.parse(player, buttons.get(0).getText(placeholders, player))))
+                        .button2(this.metaUpdater.getLegacyMessage(this.menuPlugin.parse(player, buttons.get(1).getText(placeholders, player))))
                         .validResultHandler((form, responseData) -> {
                             placeholders.register("content", form.content());
 

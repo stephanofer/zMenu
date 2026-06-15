@@ -2,6 +2,7 @@ package fr.maxlego08.menu.loader.actions;
 
 import fr.maxlego08.menu.api.MenuPlugin;
 import fr.maxlego08.menu.api.loader.ActionLoader;
+import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.api.requirement.Action;
 import fr.maxlego08.menu.api.utils.TypedMapAccessor;
 import fr.maxlego08.menu.api.utils.toast.ToastType;
@@ -28,6 +29,6 @@ public class ToastLoader extends ActionLoader {
         ToastType toastType = ToastType.valueOf(accessor.getString("toast-type", ToastType.CHALLENGE.toString()).toUpperCase());
         boolean glowing = accessor.getBoolean("glowing", false);
 
-        return new ToastAction(this.plugin, material, message, toastType, modelId, glowing);
+        return new ToastAction(this.plugin, material, LocalizedTextParser.text(accessor.getObject("message"), message), toastType, modelId, glowing);
     }
 }

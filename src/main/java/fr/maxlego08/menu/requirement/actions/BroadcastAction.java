@@ -2,6 +2,7 @@ package fr.maxlego08.menu.requirement.actions;
 
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
+import fr.maxlego08.menu.api.localization.LocalizedTextList;
 import fr.maxlego08.menu.api.requirement.Permissible;
 import fr.maxlego08.menu.api.utils.Placeholders;
 import fr.maxlego08.menu.common.utils.ActionHelper;
@@ -13,11 +14,15 @@ import java.util.List;
 
 public class BroadcastAction extends ActionHelper {
 
-    private final List<String> messages;
+    private final LocalizedTextList messages;
     private final boolean miniMessage;
     private final List<Permissible> requirements;
 
     public BroadcastAction(List<String> messages, boolean miniMessage, List<Permissible> requirements) {
+        this(LocalizedTextList.legacy(messages), miniMessage, requirements);
+    }
+
+    public BroadcastAction(LocalizedTextList messages, boolean miniMessage, List<Permissible> requirements) {
         this.messages = messages;
         this.miniMessage = miniMessage;
         this.requirements = requirements;
@@ -36,7 +41,7 @@ public class BroadcastAction extends ActionHelper {
                 }
             }
             if (allowed) {
-                this.papi(placeholders.parse(this.messages), player).forEach(message -> {
+                this.papi(placeholders.parse(this.messages.resolve(player)), player).forEach(message -> {
                     message = message.replace("%sender%", sender.getName());
                     message = message.replace("%receiver%", player.getName());
                     if (this.miniMessage) {

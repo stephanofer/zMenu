@@ -2,9 +2,9 @@ package fr.maxlego08.menu.hooks.dialogs.button.loader;
 
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.button.DefaultButtonValue;
-import fr.maxlego08.menu.api.button.dialogs.InputButton;
-import fr.maxlego08.menu.api.enums.dialog.DialogInputType;
 import fr.maxlego08.menu.api.loader.ButtonLoader;
+import fr.maxlego08.menu.api.localization.LocalizedText;
+import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.hooks.dialogs.button.buttons.ZDialogNumberRangeInput;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -26,6 +26,14 @@ public class DialogNumberRangeInputLoader extends ButtonLoader {
         String initialValue = configuration.getString(path + ".initial-value", String.valueOf((end + start) / 2));
         String labelFormat = configuration.getString(path + ".label-format", "options.generic_value");
 
-        return new ZDialogNumberRangeInput(label, start, end, step, initialValue, width, labelFormat);
+        return (Button) new ZDialogNumberRangeInput(label, start, end, step, initialValue, width, labelFormat)
+                .setLocalizedLabel(localizedText(configuration, path + ".label", label))
+                .setLocalizedInitialValueRange(localizedText(configuration, path + ".initial-value", initialValue))
+                .setLocalizedLabelFormat(localizedText(configuration, path + ".label-format", labelFormat));
+    }
+
+    private LocalizedText localizedText(YamlConfiguration configuration, String path, String legacyValue) {
+        Object object = configuration.isConfigurationSection(path) ? configuration.getConfigurationSection(path) : configuration.get(path);
+        return LocalizedTextParser.text(object, legacyValue);
     }
 }

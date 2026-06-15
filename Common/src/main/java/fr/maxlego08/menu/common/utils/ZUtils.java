@@ -1,6 +1,7 @@
 package fr.maxlego08.menu.common.utils;
 
 import fr.maxlego08.menu.api.MenuPlugin;
+import fr.maxlego08.menu.api.localization.LocalizationManager;
 import fr.maxlego08.menu.api.utils.EnumInventory;
 import fr.maxlego08.menu.api.utils.Message;
 import fr.maxlego08.menu.common.enums.Permission;
@@ -57,14 +58,7 @@ public abstract class ZUtils extends MessageUtils {
     }
 
     protected String findPlayerLocale(Player player) {
-        if (NmsVersion.getCurrentVersion().getVersion() >= NmsVersion.V_1_13.getVersion()) {
-            try {
-                return player != null ? player.getLocale() : null;
-            } catch (Exception exception) {
-                return null;
-            }
-        }
-        return null;
+        return LocalizationManager.resolveLanguage(player);
     }
 
     protected int parseInt(String value, int defaultValue) {

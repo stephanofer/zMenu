@@ -9,6 +9,8 @@ import fr.maxlego08.menu.api.button.dialogs.InputButton;
 import fr.maxlego08.menu.api.enums.bedrock.BedrockType;
 import fr.maxlego08.menu.api.exceptions.InventoryButtonException;
 import fr.maxlego08.menu.api.exceptions.InventoryException;
+import fr.maxlego08.menu.api.localization.LocalizedText;
+import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.api.requirement.Requirement;
 import fr.maxlego08.menu.api.utils.Loader;
 import fr.maxlego08.menu.hooks.bedrock.ZBedrockInventory;
@@ -43,6 +45,8 @@ public class BedrockLoader implements Loader<BedrockInventory> {
         String content = configuration.getString("content", "");
 
         ZBedrockInventory bedrockInventory = new ZBedrockInventory(this.menuPlugin, file.getName(), title, content);
+        bedrockInventory.setLocalizedName(this.localizedText(configuration, "name", title));
+        bedrockInventory.setLocalizedContent(this.localizedText(configuration, "content", content));
 
         String typeString = configuration.getString("type", "SIMPLE");
         BedrockType bedrockType;
@@ -169,6 +173,11 @@ public class BedrockLoader implements Loader<BedrockInventory> {
     }
     protected Requirement loadRequirement(YamlConfiguration configuration, String path, File file) throws InventoryException {
         return this.menuPlugin.getButtonManager().loadRequirement(configuration, path, file);
+    }
+
+    private LocalizedText localizedText(YamlConfiguration configuration, String path, String legacyValue) {
+        Object object = configuration.get(path, legacyValue);
+        return LocalizedTextParser.text(object, legacyValue);
     }
 
     @SuppressWarnings("unchecked")

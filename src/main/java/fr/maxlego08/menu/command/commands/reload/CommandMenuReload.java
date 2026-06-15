@@ -5,6 +5,7 @@ import fr.maxlego08.menu.api.InventoryManager;
 import fr.maxlego08.menu.api.ItemManager;
 import fr.maxlego08.menu.api.command.CommandManager;
 import fr.maxlego08.menu.api.configuration.Configuration;
+import fr.maxlego08.menu.api.localization.LocalizationManager;
 import fr.maxlego08.menu.api.pattern.PatternManager;
 import fr.maxlego08.menu.api.utils.Message;
 import fr.maxlego08.menu.command.VCommand;
@@ -33,6 +34,7 @@ public class CommandMenuReload extends VCommand {
         InventoryManager inventoryManager = plugin.getInventoryManager();
 
         YamlFileCache.clearCache();
+        LocalizationManager.clearCache();
 
         plugin.loadGlobalPlaceholders();
         plugin.getMessageLoader().load();
@@ -48,6 +50,7 @@ public class CommandMenuReload extends VCommand {
 
         inventoryManager.deleteInventories(plugin);
         inventoryManager.loadInventories();
+        LocalizationManager.clearCache();
 
         CommandManager commandManager = plugin.getCommandManager();
         commandManager.loadCommands();

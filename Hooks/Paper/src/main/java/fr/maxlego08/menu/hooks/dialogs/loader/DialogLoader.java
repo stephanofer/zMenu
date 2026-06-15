@@ -10,6 +10,8 @@ import fr.maxlego08.menu.api.configuration.Configuration;
 import fr.maxlego08.menu.api.enums.dialog.DialogType;
 import fr.maxlego08.menu.api.exceptions.InventoryButtonException;
 import fr.maxlego08.menu.api.exceptions.InventoryException;
+import fr.maxlego08.menu.api.localization.LocalizedText;
+import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.api.requirement.Requirement;
 import fr.maxlego08.menu.api.utils.InventoryReplacement;
 import fr.maxlego08.menu.api.utils.Loader;
@@ -44,6 +46,8 @@ public class DialogLoader implements Loader<DialogInventory> {
         String externalTitle = configuration.getString("external-title", "");
 
         ZDialogInventory dialogInventory = new ZDialogInventory(this.menuPlugin, name, file.getName(), externalTitle);
+        dialogInventory.setLocalizedName(this.localizedText(configuration, "name", name));
+        dialogInventory.setLocalizedExternalTitle(this.localizedText(configuration, "external-title", externalTitle));
 
         boolean canCloseWithEscape = configuration.getBoolean("can-close-with-escape", true);
         dialogInventory.setCanCloseWithEscape(canCloseWithEscape);
@@ -171,6 +175,8 @@ public class DialogLoader implements Loader<DialogInventory> {
                 int noticeWidth = configuration.getInt("notice.width", 200);
                 dialogInventory.setLabel(noticeText);
                 dialogInventory.setLabelTooltip(noticeTooltip);
+                dialogInventory.setLocalizedLabel(this.localizedText(configuration, "notice.text", noticeText));
+                dialogInventory.setLocalizedLabelTooltip(this.localizedText(configuration, "notice.tooltip", noticeTooltip));
                 dialogInventory.setLabelWidth(noticeWidth);
 
             }
@@ -185,6 +191,10 @@ public class DialogLoader implements Loader<DialogInventory> {
                 dialogInventory.setNoText(noText);
                 dialogInventory.setYesTooltip(yesTooltip);
                 dialogInventory.setNoTooltip(noTooltip);
+                dialogInventory.setLocalizedYesText(this.localizedText(configuration, "confirmation.yes-text", yesText));
+                dialogInventory.setLocalizedNoText(this.localizedText(configuration, "confirmation.no-text", noText));
+                dialogInventory.setLocalizedYesTooltip(this.localizedText(configuration, "confirmation.yes-tooltip", yesTooltip));
+                dialogInventory.setLocalizedNoTooltip(this.localizedText(configuration, "confirmation.no-tooltip", noTooltip));
                 dialogInventory.setYesWidth(yesWidth);
                 dialogInventory.setNoWidth(noWidth);
                 dialogInventory.addYesAction(this.loadRequirements(configuration, "yes-actions", file));
@@ -209,7 +219,9 @@ public class DialogLoader implements Loader<DialogInventory> {
                     String tooltip = configuration.getString(path + ".tooltip", "");
                     int width = configuration.getInt(path + ".width", 100);
                     List<Requirement> requirement = this.loadRequirements(configuration, path+".actions", file);
-                    ActionButtonRecord record = new ActionButtonRecord(text, tooltip, width, requirement);
+                    ActionButtonRecord record = new ActionButtonRecord(text, tooltip, width, requirement,
+                            this.localizedText(configuration, path + ".text", text),
+                            this.localizedText(configuration, path + ".tooltip", tooltip));
                     dialogInventory.addActionButton(record);
                 }
                 dialogInventory.setNumberOfColumns(numberOfColumns);
@@ -220,7 +232,9 @@ public class DialogLoader implements Loader<DialogInventory> {
                 int width = configuration.getInt("server-links.width", 100);
                 List<Requirement> requirement = this.loadRequirements(configuration, "server-links.actions", file);
                 int numberOfColumns = configuration.getInt("server-links.number-of-columns", 1);
-                ActionButtonRecord record = new ActionButtonRecord(text, tooltip, width, requirement);
+                ActionButtonRecord record = new ActionButtonRecord(text, tooltip, width, requirement,
+                        this.localizedText(configuration, "server-links.text", text),
+                        this.localizedText(configuration, "server-links.tooltip", tooltip));
                 dialogInventory.setActionButtonServerLink(record);
                 dialogInventory.setNumberOfColumns(numberOfColumns);
             }
@@ -232,6 +246,11 @@ public class DialogLoader implements Loader<DialogInventory> {
     }
     protected Requirement loadRequirement(YamlConfiguration configuration, String path, File file) throws InventoryException {
         return this.menuPlugin.getButtonManager().loadRequirement(configuration, path, file);
+    }
+
+    private LocalizedText localizedText(YamlConfiguration configuration, String path, String legacyValue) {
+        Object object = configuration.get(path, legacyValue);
+        return LocalizedTextParser.text(object, legacyValue);
     }
 
     @SuppressWarnings("unchecked")

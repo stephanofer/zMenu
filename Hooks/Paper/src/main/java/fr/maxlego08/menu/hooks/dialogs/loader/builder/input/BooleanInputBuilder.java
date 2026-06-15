@@ -28,13 +28,13 @@ public class BooleanInputBuilder implements DialogBuilderInput {
     @Override
     public DialogInput build(Player player, InputButton button) {
         String key = button.getKey();
-        Component label = this.dialogManager.getPaperComponent().getComponent(this.menuPlugin.parse(player, button.getLabel()));
+        Component label = this.dialogManager.getPaperComponent().getComponent(this.menuPlugin.parse(player, button.getLabel(player)));
         Optional<Boolean> initialValueSupplier = button.getInitialValueSupplier();
         boolean initialValue;
-        initialValue = initialValueSupplier.orElseGet(() -> Boolean.parseBoolean(this.menuPlugin.parse(player, button.getInitialValueBool())));
+        initialValue = initialValueSupplier.orElseGet(() -> Boolean.parseBoolean(this.menuPlugin.parse(player, button.getInitialValueBool(player))));
 
-        String onTrueText = this.menuPlugin.parse(player, button.getTextTrue());
-        String onFalseText = this.menuPlugin.parse(player, button.getTextFalse());
+        String onTrueText = this.menuPlugin.parse(player, button.getTextTrue(player));
+        String onFalseText = this.menuPlugin.parse(player, button.getTextFalse(player));
 
         return DialogInput.bool(key,label,initialValue,onTrueText,onFalseText);
     }

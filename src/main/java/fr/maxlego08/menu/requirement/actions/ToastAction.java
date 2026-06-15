@@ -5,6 +5,7 @@ import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.configuration.Configuration;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
 import fr.maxlego08.menu.api.loader.MaterialLoader;
+import fr.maxlego08.menu.api.localization.LocalizedText;
 import fr.maxlego08.menu.api.requirement.Action;
 import fr.maxlego08.menu.api.utils.Placeholders;
 import fr.maxlego08.menu.api.utils.toast.ToastType;
@@ -17,12 +18,16 @@ public class ToastAction extends Action {
 
     private final MenuPlugin plugin;
     private final String material;
-    private final String message;
+    private final LocalizedText message;
     private final ToastType toastType;
     private final String modelId;
     private final boolean glowing;
 
     public ToastAction(MenuPlugin plugin, String material, String message, ToastType toastType, String modelId, boolean glowing) {
+        this(plugin, material, LocalizedText.legacy(message), toastType, modelId, glowing);
+    }
+
+    public ToastAction(MenuPlugin plugin, String material, LocalizedText message, ToastType toastType, String modelId, boolean glowing) {
         this.plugin = plugin;
         this.material = material;
         this.message = message;
@@ -71,7 +76,7 @@ public class ToastAction extends Action {
         }
 
         if (Configuration.enableToast) {
-            this.plugin.getToastHelper().showToast(finalMaterial, this.plugin.getMetaUpdater().getLegacyMessage(this.plugin.parse(player, placeholders.parse(this.message))), this.toastType, finalModel, this.glowing, player);
+            this.plugin.getToastHelper().showToast(finalMaterial, this.plugin.getMetaUpdater().getLegacyMessage(this.plugin.parse(player, placeholders.parse(this.message.resolve(player)))), this.toastType, finalModel, this.glowing, player);
         }
     }
 }

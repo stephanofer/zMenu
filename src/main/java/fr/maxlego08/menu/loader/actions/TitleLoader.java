@@ -1,6 +1,7 @@
 package fr.maxlego08.menu.loader.actions;
 
 import fr.maxlego08.menu.api.loader.ActionLoader;
+import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.api.requirement.Action;
 import fr.maxlego08.menu.api.utils.TypedMapAccessor;
 import fr.maxlego08.menu.requirement.actions.TitleAction;
@@ -23,6 +24,6 @@ public class TitleLoader extends ActionLoader {
         long duration = accessor.getLong("duration");
         long end = accessor.getLong("end");
 
-        return new TitleAction(title, subtitle, start, duration, end);
+        return new TitleAction(LocalizedTextParser.text(accessor.getObject("title"), title), LocalizedTextParser.text(accessor.getObject("subtitle"), subtitle), start, duration, end);
     }
 }

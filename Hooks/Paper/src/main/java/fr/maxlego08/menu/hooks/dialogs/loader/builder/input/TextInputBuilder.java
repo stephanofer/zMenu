@@ -32,14 +32,14 @@ public class TextInputBuilder implements DialogBuilderInput {
         String key = button.getKey();
 
         int width = button.getWidth();
-        String label = this.menuPlugin.parse(player, button.getLabel());
+        String label = this.menuPlugin.parse(player, button.getLabel(player));
         boolean labelVisible = button.isLabelVisible();
         Optional<String> defaultTextSupplier = button.getDefaultTextSupplier();
         String defaultText;
         if (defaultTextSupplier.isPresent()) {
             defaultText = this.menuPlugin.parse(player, defaultTextSupplier.get());
         } else {
-            defaultText = this.menuPlugin.parse(player, button.getDefaultText());
+            defaultText = this.menuPlugin.parse(player, button.getDefaultText(player));
         }
         int maxLength = button.getMaxLength();
         int multilineMaxLines = button.getMultilineMaxLines();

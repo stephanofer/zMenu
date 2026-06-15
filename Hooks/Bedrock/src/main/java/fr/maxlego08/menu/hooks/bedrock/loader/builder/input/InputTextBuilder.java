@@ -22,8 +22,8 @@ public class InputTextBuilder extends BedrockBuilderInput<MenuPlugin> {
 
     @Override
     public @NotNull Component build(@NotNull Player player, @NotNull InputButton button, @NotNull Placeholders placeholders) {
-        String text = this.plugin.parse(player, placeholders.parse(button.getLabel()));
-        String defaultText = this.plugin.parse(player, placeholders.parse(button.getDefaultText()));
+        String text = this.plugin.parse(player, placeholders.parse(button.getLabel(player)));
+        String defaultText = this.plugin.parse(player, placeholders.parse(button.getDefaultText(player)));
 
         return InputComponent.of(this.metaUpdater.getLegacyMessage(text), defaultText);
     }

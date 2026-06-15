@@ -25,11 +25,11 @@ public class BroadcastLoader extends ActionLoader {
     @Override
     public Action load(@NonNull String path, @NonNull TypedMapAccessor accessor, @NonNull File file) {
         boolean miniMessage = accessor.getBoolean("minimessage", accessor.getBoolean("mini-message", true));
-        List<String> messages = accessor.getStringList("messages");
+        List<String> messages = MessageLoader.extractMessages(accessor);
         List<Permissible> requirements = new ArrayList<>();
         if (accessor.contains("requirements")) {
             requirements = this.plugin.getButtonManager().loadPermissible((List<Map<String, Object>>) accessor.getObject("requirements"), path, file);
         }
-        return new BroadcastAction(messages, miniMessage, requirements);
+        return new BroadcastAction(MessageLoader.extractLocalizedMessages(accessor, messages), miniMessage, requirements);
     }
 }

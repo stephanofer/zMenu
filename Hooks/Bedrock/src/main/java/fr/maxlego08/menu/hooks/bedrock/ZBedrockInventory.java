@@ -8,6 +8,7 @@ import fr.maxlego08.menu.api.button.bedrock.BedrockButton;
 import fr.maxlego08.menu.api.button.dialogs.InputButton;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
 import fr.maxlego08.menu.api.enums.bedrock.BedrockType;
+import fr.maxlego08.menu.api.localization.LocalizedText;
 import fr.maxlego08.menu.api.requirement.Action;
 import fr.maxlego08.menu.api.requirement.ConditionalName;
 import fr.maxlego08.menu.api.requirement.Requirement;
@@ -30,6 +31,8 @@ public class ZBedrockInventory implements BedrockInventory {
 
     private final String name;
     private final String content;
+    private LocalizedText localizedName;
+    private LocalizedText localizedContent;
     private BedrockType bedrockType = BedrockType.SIMPLE;
     private List<BedrockButton> bedrockButtons = new ArrayList<>();
     private List<InputButton> inputButtons = new ArrayList<>();
@@ -49,6 +52,8 @@ public class ZBedrockInventory implements BedrockInventory {
         this.name = name;
         this.fileName = fileName.endsWith(".yml") ? fileName.replace(".yml", "") : fileName;
         this.content = content;
+        this.localizedName = LocalizedText.legacy(name);
+        this.localizedContent = LocalizedText.legacy(content);
     }
 
     @Override
@@ -66,12 +71,20 @@ public class ZBedrockInventory implements BedrockInventory {
                 return this.menuPlugin.parse(player, placeholders.parse(conditionalName.name()));
             }
         }
-        return this.menuPlugin.parse(player, placeholders.parse(this.name));
+        return this.menuPlugin.parse(player, placeholders.parse(this.localizedName.resolve(player)));
     }
 
     @Override
     public String getContent(Player player) {
-        return this.menuPlugin.parse(player, this.content);
+        return this.menuPlugin.parse(player, this.localizedContent.resolve(player));
+    }
+
+    public void setLocalizedName(LocalizedText localizedName) {
+        this.localizedName = localizedName == null ? LocalizedText.legacy(this.name) : localizedName;
+    }
+
+    public void setLocalizedContent(LocalizedText localizedContent) {
+        this.localizedContent = localizedContent == null ? LocalizedText.legacy(this.content) : localizedContent;
     }
 
     @Override

@@ -8,6 +8,7 @@ import fr.maxlego08.menu.api.button.dialogs.BodyButton;
 import fr.maxlego08.menu.api.button.dialogs.InputButton;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
 import fr.maxlego08.menu.api.enums.dialog.DialogType;
+import fr.maxlego08.menu.api.localization.LocalizedText;
 import fr.maxlego08.menu.api.requirement.Action;
 import fr.maxlego08.menu.api.requirement.ConditionalName;
 import fr.maxlego08.menu.api.requirement.Requirement;
@@ -35,6 +36,8 @@ public class ZDialogInventory implements DialogInventory {
 
     private final String name;
     private final String externalTitle;
+    private LocalizedText localizedName;
+    private LocalizedText localizedExternalTitle;
     private boolean canCloseWithEscape = true;
     private boolean pause = false;
     private String afterAction = "CLOSE";
@@ -46,17 +49,23 @@ public class ZDialogInventory implements DialogInventory {
     private final List<Requirement> actions = new ArrayList<>();
     private String label;
     private String labelTooltip;
+    private LocalizedText localizedLabel = LocalizedText.legacy("");
+    private LocalizedText localizedLabelTooltip = LocalizedText.legacy("");
     private int labelWidth = 200;
 
     // When {@link DialogType#CONFIRM} is used
     private final List<Requirement> yesActions = new ArrayList<>();
     private String yesText = "Yes";
     private String yesTooltip = "";
+    private LocalizedText localizedYesText = LocalizedText.legacy("Yes");
+    private LocalizedText localizedYesTooltip = LocalizedText.legacy("");
     private int yesWidth = 100;
 
     private final List<Requirement> noActions = new ArrayList<>();
     private String noText = "No";
     private String noTooltip = "";
+    private LocalizedText localizedNoText = LocalizedText.legacy("No");
+    private LocalizedText localizedNoTooltip = LocalizedText.legacy("");
     private int noWidth = 100;
 
     // MultiAction
@@ -76,6 +85,8 @@ public class ZDialogInventory implements DialogInventory {
         this.name = name;
         this.fileName = fileName.endsWith(".yml") ? fileName.replace(".yml", "") : fileName;
         this.externalTitle = externalTitle;
+        this.localizedName = LocalizedText.legacy(name);
+        this.localizedExternalTitle = LocalizedText.legacy(externalTitle);
     }
 
     @Override
@@ -93,7 +104,7 @@ public class ZDialogInventory implements DialogInventory {
                 return conditionalName.name();
             }
         }
-        return this.menuPlugin.parse(player, this.name);
+        return this.menuPlugin.parse(player, placeholders.parse(this.localizedName.resolve(player)));
     }
 
     @Override
@@ -181,9 +192,17 @@ public class ZDialogInventory implements DialogInventory {
     @Override
     public ZDialogInventoryBuild getBuild(Player player) {
         return new ZDialogInventoryBuild(
-                this.menuPlugin.parse(player, this.name),
-                this.menuPlugin.parse(player, this.externalTitle), this.canCloseWithEscape
+                this.menuPlugin.parse(player, this.localizedName.resolve(player)),
+                this.menuPlugin.parse(player, this.localizedExternalTitle.resolve(player)), this.canCloseWithEscape
         );
+    }
+
+    public void setLocalizedName(LocalizedText localizedName) {
+        this.localizedName = localizedName == null ? LocalizedText.legacy(this.name) : localizedName;
+    }
+
+    public void setLocalizedExternalTitle(LocalizedText localizedExternalTitle) {
+        this.localizedExternalTitle = localizedExternalTitle == null ? LocalizedText.legacy(this.externalTitle) : localizedExternalTitle;
     }
 
     @Override
@@ -314,12 +333,13 @@ public class ZDialogInventory implements DialogInventory {
 
     @Override
     public String getYesText(Player player) {
-        return this.menuPlugin.parse(player, this.yesText);
+        return this.menuPlugin.parse(player, this.localizedYesText.resolve(player));
     }
 
     @Override
     public void setYesText(String yesText) {
         this.yesText = yesText;
+        this.localizedYesText = LocalizedText.legacy(yesText);
     }
     @Override
     public String getNoText() {
@@ -328,12 +348,13 @@ public class ZDialogInventory implements DialogInventory {
 
     @Override
     public String getNoText(Player player) {
-        return this.menuPlugin.parse(player, this.noText);
+        return this.menuPlugin.parse(player, this.localizedNoText.resolve(player));
     }
 
     @Override
     public void setNoText(String noText) {
         this.noText = noText;
+        this.localizedNoText = LocalizedText.legacy(noText);
     }
     @Override
     public String getYesTooltip() {
@@ -342,12 +363,13 @@ public class ZDialogInventory implements DialogInventory {
 
     @Override
     public String getYesTooltip(Player player) {
-        return this.menuPlugin.parse(player, this.yesTooltip);
+        return this.menuPlugin.parse(player, this.localizedYesTooltip.resolve(player));
     }
 
     @Override
     public void setYesTooltip(String yesTooltip) {
         this.yesTooltip = yesTooltip;
+        this.localizedYesTooltip = LocalizedText.legacy(yesTooltip);
     }
     @Override
     public String getNoTooltip() {
@@ -356,7 +378,7 @@ public class ZDialogInventory implements DialogInventory {
 
     @Override
     public String getNoTooltip(Player player) {
-        return this.menuPlugin.parse(player, this.noTooltip);
+        return this.menuPlugin.parse(player, this.localizedNoTooltip.resolve(player));
     }
 
     @Override
@@ -386,12 +408,13 @@ public class ZDialogInventory implements DialogInventory {
 
     @Override
     public String getLabel(Player player) {
-        return this.menuPlugin.parse(player, this.label);
+        return this.menuPlugin.parse(player, this.localizedLabel.resolve(player));
     }
 
     @Override
     public void setLabel(String label) {
         this.label = label;
+        this.localizedLabel = LocalizedText.legacy(label);
     }
 
     @Override
@@ -401,12 +424,13 @@ public class ZDialogInventory implements DialogInventory {
 
     @Override
     public String getLabelTooltip(Player player) {
-        return this.menuPlugin.parse(player, this.labelTooltip);
+        return this.menuPlugin.parse(player, this.localizedLabelTooltip.resolve(player));
     }
 
     @Override
     public void setLabelTooltip(String labelTooltip) {
         this.labelTooltip = labelTooltip;
+        this.localizedLabelTooltip = LocalizedText.legacy(labelTooltip);
     }
 
     @Override
@@ -467,6 +491,31 @@ public class ZDialogInventory implements DialogInventory {
     @Override
     public void setNoTooltip(String noTooltip) {
         this.noTooltip = noTooltip;
+        this.localizedNoTooltip = LocalizedText.legacy(noTooltip);
+    }
+
+    public void setLocalizedLabel(LocalizedText localizedLabel) {
+        this.localizedLabel = localizedLabel == null ? LocalizedText.legacy(this.label) : localizedLabel;
+    }
+
+    public void setLocalizedLabelTooltip(LocalizedText localizedLabelTooltip) {
+        this.localizedLabelTooltip = localizedLabelTooltip == null ? LocalizedText.legacy(this.labelTooltip) : localizedLabelTooltip;
+    }
+
+    public void setLocalizedYesText(LocalizedText localizedYesText) {
+        this.localizedYesText = localizedYesText == null ? LocalizedText.legacy(this.yesText) : localizedYesText;
+    }
+
+    public void setLocalizedYesTooltip(LocalizedText localizedYesTooltip) {
+        this.localizedYesTooltip = localizedYesTooltip == null ? LocalizedText.legacy(this.yesTooltip) : localizedYesTooltip;
+    }
+
+    public void setLocalizedNoText(LocalizedText localizedNoText) {
+        this.localizedNoText = localizedNoText == null ? LocalizedText.legacy(this.noText) : localizedNoText;
+    }
+
+    public void setLocalizedNoTooltip(LocalizedText localizedNoTooltip) {
+        this.localizedNoTooltip = localizedNoTooltip == null ? LocalizedText.legacy(this.noTooltip) : localizedNoTooltip;
     }
 
     @SuppressWarnings("unchecked")
