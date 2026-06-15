@@ -23,7 +23,7 @@ public class LabelBuilder extends BedrockBuilderInput<MenuPlugin> {
 
     @Override
     public @NotNull Component build(@NotNull Player player, @NotNull InputButton button, @NotNull Placeholders placeholders) {
-        String text = this.plugin.parse(player, placeholders.parse(button.getLabel()));
+        String text = this.plugin.parse(player, placeholders.parse(button.getLabel(player)));
 
         return LabelComponent.of(this.metaUpdater.getLegacyMessage(text));
     }

@@ -35,12 +35,12 @@ public class SingleOptionInputBuilder implements DialogBuilderInput {
         
         String key = button.getKey();
         int width = button.getWidth();
-        Component label = paperComponent.getComponent(this.menuPlugin.parse(player, button.getLabel()));
+        Component label = paperComponent.getComponent(this.menuPlugin.parse(player, button.getLabel(player)));
         boolean labelVisible = button.isLabelVisible();
         List<SingleOption> optionList = button.getSigleOptions();
         List<SingleOptionDialogInput.OptionEntry> finalOptions = new ArrayList<>();
         for (SingleOption option : optionList) {
-            finalOptions.add(SingleOptionDialogInput.OptionEntry.create(option.id(),paperComponent.getComponent(option.display()),option.initialValue()));
+            finalOptions.add(SingleOptionDialogInput.OptionEntry.create(option.id(), paperComponent.getComponent(this.menuPlugin.parse(player, option.display(player))), option.initialValue()));
         }
         
         return DialogInput.singleOption(key, width, finalOptions, label, labelVisible);

@@ -2,9 +2,9 @@ package fr.maxlego08.menu.hooks.dialogs.button.loader;
 
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.button.DefaultButtonValue;
-import fr.maxlego08.menu.api.button.dialogs.InputButton;
-import fr.maxlego08.menu.api.enums.dialog.DialogInputType;
 import fr.maxlego08.menu.api.loader.ButtonLoader;
+import fr.maxlego08.menu.api.localization.LocalizedText;
+import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.api.utils.dialogs.record.SingleOption;
 import fr.maxlego08.menu.hooks.dialogs.button.buttons.ZDialogSingleOptionInput;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -42,10 +42,16 @@ public class DialogSingleOptionInputLoader extends ButtonLoader {
                     initialAlreadySet = true;
                 }
 
-                SingleOption singleOption = new SingleOption(id, display, initialValue);
+                SingleOption singleOption = new SingleOption(id, display, initialValue, localizedText(configuration, optionPath + ".display", display));
                 singleOptionList.add(singleOption);
             }
         }
-        return new ZDialogSingleOptionInput(label, labelVisible,  singleOptionList);
+        return (Button) new ZDialogSingleOptionInput(label, labelVisible, singleOptionList)
+                .setLocalizedLabel(localizedText(configuration, path + ".label", label));
+    }
+
+    private LocalizedText localizedText(YamlConfiguration configuration, String path, String legacyValue) {
+        Object object = configuration.isConfigurationSection(path) ? configuration.getConfigurationSection(path) : configuration.get(path);
+        return LocalizedTextParser.text(object, legacyValue);
     }
 }

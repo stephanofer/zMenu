@@ -20,7 +20,7 @@ public class ButtonBuilder {
     }
 
     public ButtonComponent build(Player player, BedrockButton button, Placeholders placeholders) {
-        String text = this.parseAndColor(button.getRawText(), player, placeholders);
+        String text = this.parseAndColor(button.getRawText(player), player, placeholders);
 
         BedrockImageType imageType = button.getImageType(player);
         if (imageType == BedrockImageType.NONE){

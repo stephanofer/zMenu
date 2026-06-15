@@ -14,6 +14,7 @@ import fr.maxlego08.menu.api.enums.MenuItemRarity;
 import fr.maxlego08.menu.api.exceptions.ItemEnchantException;
 import fr.maxlego08.menu.api.itemstack.*;
 import fr.maxlego08.menu.api.loader.ItemComponentLoader;
+import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.api.utils.Loader;
 import fr.maxlego08.menu.api.utils.LoreType;
 import fr.maxlego08.menu.common.utils.ZUtils;
@@ -83,7 +84,9 @@ public class MenuItemStackLoader extends ZUtils implements Loader<MenuItemStack>
         this.loadFireworks(menuItemStack, configuration, path);
         this.loadLore(menuItemStack, configuration, path);
 
-        menuItemStack.setDisplayName(configuration.getString(path + "name", configuration.getString(path + "display_name", configuration.getString(path + "display-name", null))));
+        String displayName = configuration.getString(path + "name", configuration.getString(path + "display_name", configuration.getString(path + "display-name", null)));
+        menuItemStack.setDisplayName(displayName);
+        this.loadLocalizedName(menuItemStack, configuration, path, displayName);
         menuItemStack.setCenterName(configuration.getBoolean(path + "center-name", false));
         menuItemStack.setCenterLore(configuration.getBoolean(path + "center-lore", false));
         try {
@@ -170,6 +173,23 @@ public class MenuItemStackLoader extends ZUtils implements Loader<MenuItemStack>
             }
         }
         menuItemStack.setLore(lore);
+        Object loreObject = configuration.get(path + "lore", null);
+        if (loreObject instanceof ConfigurationSection section) {
+            loreObject = section;
+        }
+        if (loreObject instanceof ConfigurationSection || loreObject instanceof Map<?, ?>) {
+            menuItemStack.setLocalizedLore(LocalizedTextParser.textList(loreObject, lore));
+        }
+    }
+
+    private void loadLocalizedName(ZMenuItemStack menuItemStack, YamlConfiguration configuration, String path, String legacyName) {
+        Object nameObject = configuration.get(path + "name", null);
+        if (nameObject == null) {
+            nameObject = configuration.get(path + "display_name", configuration.get(path + "display-name", null));
+        }
+        if (nameObject instanceof ConfigurationSection || nameObject instanceof Map<?, ?>) {
+            menuItemStack.setLocalizedDisplayName(LocalizedTextParser.text(nameObject, legacyName));
+        }
     }
 
     private void loadItemModel(@NonNull YamlConfiguration configuration, ZMenuItemStack menuItemStack, @NonNull String path, File file) {
@@ -406,8 +426,12 @@ public class MenuItemStackLoader extends ZUtils implements Loader<MenuItemStack>
      * @param path          the path to the configuration key for the translated name and lore
      */
     private void loadTranslation(ZMenuItemStack menuItemStack, YamlConfiguration configuration, String path) {
-        this.loadTranslatedName(menuItemStack, configuration, path);
-        this.loadTranslatedLore(menuItemStack, configuration, path);
+        if (configuration.contains(path + "translatedName") || configuration.contains(path + "translated-name")) {
+            this.loadTranslatedName(menuItemStack, configuration, path);
+        }
+        if (configuration.contains(path + "translatedLore") || configuration.contains(path + "translated-lore")) {
+            this.loadTranslatedLore(menuItemStack, configuration, path);
+        }
     }
 
     /**

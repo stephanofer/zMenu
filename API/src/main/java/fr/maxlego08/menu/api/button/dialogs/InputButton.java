@@ -2,7 +2,9 @@ package fr.maxlego08.menu.api.button.dialogs;
 
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.enums.dialog.DialogInputType;
+import fr.maxlego08.menu.api.localization.LocalizedText;
 import fr.maxlego08.menu.api.utils.dialogs.record.SingleOption;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +17,7 @@ public abstract class InputButton extends Button {
     private final DialogInputType inputType;
     private String key; // Unique identifier for the input button
     private String label;
+    private LocalizedText localizedLabel = LocalizedText.legacy(null);
 
     private boolean labelVisible = true;
 
@@ -25,6 +28,7 @@ public abstract class InputButton extends Button {
     private int multilineMaxLines; // Optional positive integer. If present, limits maximum lines.
     private int multilineHeight; // Value between 1 and 512 — Height of input.
     private Supplier<String> defaultTextSupplier;
+    private LocalizedText localizedDefaultText = LocalizedText.legacy("");
 
     // Single option input properties
     private List<SingleOption> singleOptions;
@@ -36,6 +40,8 @@ public abstract class InputButton extends Button {
     private Supplier<Boolean> initialValueSupplier;
     private String textTrue = "";
     private String textFalse = "";
+    private LocalizedText localizedTextTrue = LocalizedText.legacy("");
+    private LocalizedText localizedTextFalse = LocalizedText.legacy("");
 
     // Number range input properties
     // use width
@@ -45,6 +51,9 @@ public abstract class InputButton extends Button {
     private String initialValueRange = String.valueOf(50); // Default initial value
     private Supplier<Float> initialValueRangeSupplier;
     private String labelFormat = "options.generic_value"; // Default label format
+    private LocalizedText localizedInitialValueBool = LocalizedText.legacy(String.valueOf(true));
+    private LocalizedText localizedInitialValueRange = LocalizedText.legacy(String.valueOf(50));
+    private LocalizedText localizedLabelFormat = LocalizedText.legacy("options.generic_value");
 
     public InputButton(DialogInputType inputType) {
         super();
@@ -60,9 +69,20 @@ public abstract class InputButton extends Button {
         return this.label;
     }
 
+    public @NotNull String getLabel(@Nullable Player player) {
+        return this.localizedLabel.resolve(player);
+    }
+
     @Contract("_ -> this")
     public InputButton setLabel(@Nullable String label) {
         this.label = label;
+        this.localizedLabel = LocalizedText.legacy(label);
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public InputButton setLocalizedLabel(@Nullable LocalizedText localizedLabel) {
+        this.localizedLabel = localizedLabel == null ? LocalizedText.legacy(this.label) : localizedLabel;
         return this;
     }
 
@@ -94,9 +114,20 @@ public abstract class InputButton extends Button {
         return this.defaultText;
     }
 
+    public @NotNull String getDefaultText(@Nullable Player player) {
+        return this.localizedDefaultText.resolve(player);
+    }
+
     @Contract("_ -> this")
     public InputButton setDefaultText(@NotNull String defaultText) {
         this.defaultText = defaultText;
+        this.localizedDefaultText = LocalizedText.legacy(defaultText);
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public InputButton setLocalizedDefaultText(@Nullable LocalizedText localizedDefaultText) {
+        this.localizedDefaultText = localizedDefaultText == null ? LocalizedText.legacy(this.defaultText) : localizedDefaultText;
         return this;
     }
 
@@ -151,9 +182,20 @@ public abstract class InputButton extends Button {
         return this.initialValueBool;
     }
 
+    public @NotNull String getInitialValueBool(@Nullable Player player) {
+        return this.localizedInitialValueBool.resolve(player);
+    }
+
     @Contract("_ -> this")
     public InputButton setInitialValueBool(@NotNull String initialValueBool) {
         this.initialValueBool = initialValueBool;
+        this.localizedInitialValueBool = LocalizedText.legacy(initialValueBool);
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public InputButton setLocalizedInitialValueBool(@Nullable LocalizedText localizedInitialValueBool) {
+        this.localizedInitialValueBool = localizedInitialValueBool == null ? LocalizedText.legacy(this.initialValueBool) : localizedInitialValueBool;
         return this;
     }
 
@@ -163,9 +205,20 @@ public abstract class InputButton extends Button {
         return this.textTrue;
     }
 
+    public @NotNull String getTextTrue(@Nullable Player player) {
+        return this.localizedTextTrue.resolve(player);
+    }
+
     @Contract("_ -> this")
     public InputButton setTextTrue(@NotNull String textTrue) {
         this.textTrue = textTrue;
+        this.localizedTextTrue = LocalizedText.legacy(textTrue);
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public InputButton setLocalizedTextTrue(@Nullable LocalizedText localizedTextTrue) {
+        this.localizedTextTrue = localizedTextTrue == null ? LocalizedText.legacy(this.textTrue) : localizedTextTrue;
         return this;
     }
 
@@ -175,9 +228,20 @@ public abstract class InputButton extends Button {
         return this.textFalse;
     }
 
+    public @NotNull String getTextFalse(@Nullable Player player) {
+        return this.localizedTextFalse.resolve(player);
+    }
+
     @Contract("_ -> this")
     public InputButton setTextFalse(@NotNull String textFalse) {
         this.textFalse = textFalse;
+        this.localizedTextFalse = LocalizedText.legacy(textFalse);
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public InputButton setLocalizedTextFalse(@Nullable LocalizedText localizedTextFalse) {
+        this.localizedTextFalse = localizedTextFalse == null ? LocalizedText.legacy(this.textFalse) : localizedTextFalse;
         return this;
     }
 
@@ -220,9 +284,20 @@ public abstract class InputButton extends Button {
         return this.initialValueRange;
     }
 
+    public @NotNull String getInitialValueRange(@Nullable Player player) {
+        return this.localizedInitialValueRange.resolve(player);
+    }
+
     @Contract("_ -> this")
     public InputButton setInitialValueRange(@NotNull String initialValueRange) {
         this.initialValueRange = initialValueRange;
+        this.localizedInitialValueRange = LocalizedText.legacy(initialValueRange);
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public InputButton setLocalizedInitialValueRange(@Nullable LocalizedText localizedInitialValueRange) {
+        this.localizedInitialValueRange = localizedInitialValueRange == null ? LocalizedText.legacy(this.initialValueRange) : localizedInitialValueRange;
         return this;
     }
 
@@ -244,9 +319,20 @@ public abstract class InputButton extends Button {
         return this.labelFormat;
     }
 
+    public @NotNull String getLabelFormat(@Nullable Player player) {
+        return this.localizedLabelFormat.resolve(player);
+    }
+
     @Contract("_ -> this")
     public InputButton setLabelFormat(@NotNull String labelFormat) {
         this.labelFormat = labelFormat;
+        this.localizedLabelFormat = LocalizedText.legacy(labelFormat);
+        return this;
+    }
+
+    @Contract("_ -> this")
+    public InputButton setLocalizedLabelFormat(@Nullable LocalizedText localizedLabelFormat) {
+        this.localizedLabelFormat = localizedLabelFormat == null ? LocalizedText.legacy(this.labelFormat) : localizedLabelFormat;
         return this;
     }
 

@@ -14,6 +14,7 @@ import fr.maxlego08.menu.api.exceptions.InventoryException;
 import fr.maxlego08.menu.api.exceptions.InventorySizeException;
 import fr.maxlego08.menu.api.exceptions.InventoryTypeException;
 import fr.maxlego08.menu.api.itemstack.ItemStackSimilar;
+import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.api.pattern.ActionPattern;
 import fr.maxlego08.menu.api.pattern.Pattern;
 import fr.maxlego08.menu.api.pattern.PatternManager;
@@ -120,6 +121,10 @@ public class InventoryLoader extends ZUtils implements Loader<Inventory> {
             inventory = new ZInventory(this.plugin, name, fileName, size, buttons);
         }
 
+        if (nameObject instanceof ConfigurationSection || nameObject instanceof Map<?, ?>) {
+            inventory.setLocalizedName(LocalizedTextParser.text(nameObject, name));
+        }
+
         this.loadTitleAnimation(inventory, configuration, file);
 
         inventory.setType(inventoryType);
@@ -155,10 +160,7 @@ public class InventoryLoader extends ZUtils implements Loader<Inventory> {
         this.loadOpenRequirement(configuration, inventory, file);
         this.loadOpenAndCloseActions(configuration, inventory, file);
 
-        /*Map<String, String> translatedDisplayName = new HashMap<>();
-        MenuItemStackLoader.getTranslatedName(configuration, path, translatedDisplayName);
-        String loadString;
-        inventory.setTranslatedNames(translatedDisplayName);*/
+        this.loadTranslatedNames(configuration, inventory);
 
         List<InventoryOption> inventoryOptions = new ArrayList<>();
         for (Map.Entry<Plugin, List<Class<? extends InventoryOption>>> entry : this.plugin.getInventoryManager().getInventoryOptions().entrySet()) {
@@ -174,6 +176,20 @@ public class InventoryLoader extends ZUtils implements Loader<Inventory> {
         }
 
         return inventory;
+    }
+
+    private void loadTranslatedNames(YamlConfiguration configuration, ZInventory inventory) {
+        String loadString = configuration.contains("translatedName") ? "translatedName" : configuration.contains("translated-name") ? "translated-name" : null;
+        if (loadString == null) {
+            return;
+        }
+        Map<String, String> translatedNames = new HashMap<>();
+        configuration.getMapList(loadString).forEach(map -> {
+            if (map.containsKey("locale") && map.containsKey("name")) {
+                translatedNames.put(String.valueOf(map.get("locale")).toLowerCase(Locale.ROOT), String.valueOf(map.get("name")));
+            }
+        });
+        inventory.setTranslatedNames(translatedNames);
     }
 
     private void loadOpenAndCloseActions(@NonNull YamlConfiguration configuration, ZInventory inventory, File file) {

@@ -135,6 +135,9 @@ public class Configuration {
     // Default menu name
     public static String mainMenu = "example";
 
+    // Default language used when no per-player language source is available.
+    public static String defaultLanguage = "en";
+
     // Open main menu when swap item offhand key is press
     @ConfigOption(
             key = "useSwapItemOffHandKeyToOpenMainMenu",
@@ -373,6 +376,7 @@ public class Configuration {
         secondsSavePlayerInventories = fileConfiguration.getInt(ConfigPath.SECONDS_SAVE_PLAYER_INVENTORIES.getPath());
 
         mainMenu = fileConfiguration.getString(ConfigPath.MAIN_MENU.getPath());
+        defaultLanguage = fileConfiguration.getString(ConfigPath.DEFAULT_LANGUAGE.getPath(), "en");
         useSwapItemOffHandKeyToOpenMainMenu = fileConfiguration.getBoolean(ConfigPath.USE_SWAP_ITEM_OFF_HAND_KEY_TO_OPEN_MAIN_MENU.getPath());
         useSwapItemOffHandKeyToOpenMainMenuNeedsShift = fileConfiguration.getBoolean(ConfigPath.USE_SWAP_ITEM_OFF_HAND_KEY_TO_OPEN_MAIN_MENU_NEEDS_SHIFT.getPath());
 
@@ -453,6 +457,7 @@ public class Configuration {
         fileConfiguration.set(ConfigPath.SECONDS_SAVE_PLAYER_INVENTORIES.getPath(), secondsSavePlayerInventories);
 
         fileConfiguration.set(ConfigPath.MAIN_MENU.getPath(), mainMenu);
+        fileConfiguration.set(ConfigPath.DEFAULT_LANGUAGE.getPath(), defaultLanguage);
         fileConfiguration.set(ConfigPath.USE_SWAP_ITEM_OFF_HAND_KEY_TO_OPEN_MAIN_MENU.getPath(), useSwapItemOffHandKeyToOpenMainMenu);
         fileConfiguration.set(ConfigPath.USE_SWAP_ITEM_OFF_HAND_KEY_TO_OPEN_MAIN_MENU_NEEDS_SHIFT.getPath(), useSwapItemOffHandKeyToOpenMainMenuNeedsShift);
 
@@ -512,6 +517,7 @@ public class Configuration {
         SECONDS_SAVE_PLAYER_INVENTORIES("seconds-save-player-inventories"),
 
         MAIN_MENU("main-menu"),
+        DEFAULT_LANGUAGE("default-language"),
         USE_SWAP_ITEM_OFF_HAND_KEY_TO_OPEN_MAIN_MENU("use-swap-item-off-hand-key-to-open-main-menu"),
         USE_SWAP_ITEM_OFF_HAND_KEY_TO_OPEN_MAIN_MENU_NEEDS_SHIFT("use-swap-item-off-hand-key-to-open-main-menu-needs-shift"),
 

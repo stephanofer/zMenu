@@ -26,12 +26,12 @@ public class SliderInputBuilder extends BedrockBuilderInput<MenuPlugin> {
     @Override
     public @NotNull Component build(@NotNull Player player, @NotNull InputButton button, @NotNull Placeholders placeholders) {
 
-        String text = this.plugin.parse(player, placeholders.parse(button.getLabel()));
+        String text = this.plugin.parse(player, placeholders.parse(button.getLabel(player)));
         float start = button.getStart();
         float end = button.getEnd();
 
         float initialValueFloat;
-        String initialValue = this.plugin.parse(player, placeholders.parse(button.getInitialValueRange()));
+        String initialValue = this.plugin.parse(player, placeholders.parse(button.getInitialValueRange(player)));
         try {
             initialValueFloat = Float.parseFloat(initialValue);
         } catch (NumberFormatException e) {

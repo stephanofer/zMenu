@@ -21,6 +21,6 @@ public class MessageToLoader extends ActionLoader {
         boolean miniMessage = accessor.getBoolean("minimessage", accessor.getBoolean("mini-message", true));
         List<String> messages = MessageLoader.extractMessages(accessor);
         String targetPlayer = accessor.getString("target-player", "");
-        return new MessageToAction(messages, miniMessage, targetPlayer);
+        return new MessageToAction(MessageLoader.extractLocalizedMessages(accessor, messages), miniMessage, targetPlayer);
     }
 }

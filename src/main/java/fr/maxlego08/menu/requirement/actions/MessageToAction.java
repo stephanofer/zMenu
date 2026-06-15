@@ -2,6 +2,7 @@ package fr.maxlego08.menu.requirement.actions;
 
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
+import fr.maxlego08.menu.api.localization.LocalizedTextList;
 import fr.maxlego08.menu.api.utils.Placeholders;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,6 +14,11 @@ public class MessageToAction extends MessageAction {
     private final String targetPlayer;
 
     public MessageToAction(List<String> messages, boolean miniMessage, String targetPlayer) {
+        super(messages, miniMessage);
+        this.targetPlayer = targetPlayer;
+    }
+
+    public MessageToAction(LocalizedTextList messages, boolean miniMessage, String targetPlayer) {
         super(messages, miniMessage);
         this.targetPlayer = targetPlayer;
     }

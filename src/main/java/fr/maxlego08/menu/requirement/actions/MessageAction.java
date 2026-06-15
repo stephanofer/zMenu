@@ -2,6 +2,7 @@ package fr.maxlego08.menu.requirement.actions;
 
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
+import fr.maxlego08.menu.api.localization.LocalizedTextList;
 import fr.maxlego08.menu.api.utils.Placeholders;
 import fr.maxlego08.menu.common.utils.ActionHelper;
 import org.bukkit.entity.Player;
@@ -11,17 +12,21 @@ import java.util.List;
 
 public class MessageAction extends ActionHelper {
 
-    private final List<String> messages;
+    private final LocalizedTextList messages;
     private final boolean miniMessage;
 
     public MessageAction(List<String> messages, boolean miniMessage) {
+        this(LocalizedTextList.legacy(messages), miniMessage);
+    }
+
+    public MessageAction(LocalizedTextList messages, boolean miniMessage) {
         this.messages = messages;
         this.miniMessage = miniMessage;
     }
 
     @Override
     protected void execute(@NonNull Player player, Button button, @NonNull InventoryEngine inventory, @NonNull Placeholders placeholders) {
-        this.papi(placeholders.parse(this.parseAndFlattenCommands(this.messages, player)), player).forEach(message -> {
+        this.papi(placeholders.parse(this.parseAndFlattenCommands(this.messages.resolve(player), player)), player).forEach(message -> {
             if (this.miniMessage) {
                 inventory.getPlugin().getMetaUpdater().sendMessage(player, message);
             } else {

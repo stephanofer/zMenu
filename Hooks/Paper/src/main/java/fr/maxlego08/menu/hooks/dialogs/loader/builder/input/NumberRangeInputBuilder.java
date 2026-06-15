@@ -31,8 +31,8 @@ public class NumberRangeInputBuilder implements DialogBuilderInput {
     public DialogInput build(Player player, InputButton button) {
         String key = button.getKey();
         int width = button.getWidth();
-        Component label = this.dialogManager.getPaperComponent().getComponent(this.menuPlugin.parse(player, button.getLabel()));
-        String labelFormat = this.menuPlugin.parse(player, button.getLabelFormat());
+        Component label = this.dialogManager.getPaperComponent().getComponent(this.menuPlugin.parse(player, button.getLabel(player)));
+        String labelFormat = this.menuPlugin.parse(player, button.getLabelFormat(player));
         float start = button.getStart();
         float end = button.getEnd();
         Optional<Float> initialValueSupplier = button.getInitialValueRangeSupplier();
@@ -40,7 +40,7 @@ public class NumberRangeInputBuilder implements DialogBuilderInput {
         if (initialValueSupplier.isPresent()) {
              initialValueFloat = initialValueSupplier.get();
         } else {
-            String initialValue = this.menuPlugin.parse(player, button.getInitialValueRange());
+            String initialValue = this.menuPlugin.parse(player, button.getInitialValueRange(player));
             try {
                 initialValueFloat = Float.parseFloat(initialValue);
             } catch (NumberFormatException e) {

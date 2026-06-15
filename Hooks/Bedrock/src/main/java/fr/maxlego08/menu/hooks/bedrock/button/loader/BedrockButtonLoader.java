@@ -4,6 +4,8 @@ import fr.maxlego08.menu.api.button.DefaultButtonValue;
 import fr.maxlego08.menu.api.button.bedrock.BedrockButton;
 import fr.maxlego08.menu.api.enums.bedrock.BedrockImageType;
 import fr.maxlego08.menu.api.loader.ButtonLoader;
+import fr.maxlego08.menu.api.localization.LocalizedText;
+import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.hooks.bedrock.button.buttons.ZBedrockButton;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -31,6 +33,13 @@ public class BedrockButtonLoader extends ButtonLoader {
         // Données de l'image
         String imageData = configuration.getString(path + ".image-value", "");
 
-        return new ZBedrockButton(text, imageType, imageData);
+        BedrockButton button = new ZBedrockButton(text, imageType, imageData);
+        button.setLocalizedText(localizedText(configuration, path + ".text", text));
+        return button;
+    }
+
+    private LocalizedText localizedText(YamlConfiguration configuration, String path, String legacyValue) {
+        Object object = configuration.isConfigurationSection(path) ? configuration.getConfigurationSection(path) : configuration.get(path);
+        return LocalizedTextParser.text(object, legacyValue);
     }
 }

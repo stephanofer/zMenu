@@ -9,6 +9,7 @@ import fr.maxlego08.menu.api.configuration.Configuration;
 import fr.maxlego08.menu.api.engine.InventoryEngine;
 import fr.maxlego08.menu.api.engine.InventoryResult;
 import fr.maxlego08.menu.api.pattern.Pattern;
+import fr.maxlego08.menu.api.localization.LocalizedText;
 import fr.maxlego08.menu.api.players.inventory.InventoriesPlayer;
 import fr.maxlego08.menu.api.requirement.Action;
 import fr.maxlego08.menu.api.requirement.ConditionalName;
@@ -34,6 +35,7 @@ public class ZInventory extends ZUtils implements Inventory {
     private final List<Button> buttons;
     private final List<ConditionalName> conditionalNames = new ArrayList<>();
     private InventoryReplacement inventoryReplacement;
+    private LocalizedText localizedName;
     private Map<String, String> translatedNames = new HashMap<>();
     private List<Pattern> patterns = new ArrayList<>();
     private MenuItemStack fillItemStack;
@@ -62,6 +64,7 @@ public class ZInventory extends ZUtils implements Inventory {
         super();
         this.plugin = plugin;
         this.name = name;
+        this.localizedName = LocalizedText.legacy(name);
         this.fileName = fileName;
         this.size = size;
         this.buttons = buttons;
@@ -98,7 +101,7 @@ public class ZInventory extends ZUtils implements Inventory {
         }
 
         String locale = this.findPlayerLocale(player);
-        return locale == null ? this.name : this.translatedNames.getOrDefault(locale, this.name);
+        return this.localizedName.resolve(locale);
     }
 
     @Override
@@ -374,6 +377,11 @@ public class ZInventory extends ZUtils implements Inventory {
 
     public void setTranslatedNames(Map<String, String> translatedNames) {
         this.translatedNames = translatedNames;
+        this.localizedName = LocalizedText.of(null, translatedNames, this.name);
+    }
+
+    public void setLocalizedName(LocalizedText localizedName) {
+        this.localizedName = localizedName == null ? LocalizedText.legacy(this.name) : localizedName;
     }
 
     @Override

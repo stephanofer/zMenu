@@ -123,6 +123,10 @@ seconds-save-player-inventories: 600
 # The name of the default menu to be opened if no specific one is defined.
 main-menu: "example"
 
+# Default language used when NetworkPlayerSettings is unavailable, not ready, or cannot resolve a player language.
+# Locale keys in menus use short language codes such as "en" and "es".
+default-language: "en"
+
 # Use swap offhand key to open main menu.
 # Allows opening the default menu when the player presses the offhand (F) key.
 use-swap-item-off-hand-key-to-open-main-menu: false

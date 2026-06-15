@@ -53,6 +53,7 @@ import fr.maxlego08.menu.inventory.inventories.InventoryDefault;
 import fr.maxlego08.menu.listener.AdapterListener;
 import fr.maxlego08.menu.listener.ItemUpdaterListener;
 import fr.maxlego08.menu.listener.SwapKeyListener;
+import fr.maxlego08.menu.localization.NetworkPlayerSettingsLocalizationBridge;
 import fr.maxlego08.menu.loader.materials.ArmorLoader;
 import fr.maxlego08.menu.loader.materials.Base64Loader;
 import fr.maxlego08.menu.pattern.ZPatternManager;
@@ -179,6 +180,8 @@ public class ZMenuPlugin extends ZPlugin implements MenuPlugin {
         }
 
         this.loadGlobalPlaceholders();
+
+        new NetworkPlayerSettingsLocalizationBridge(this).register();
 
         this.zCommandManager = new VCommandManager(this);
         this.vinventoryManager = new VInventoryManager(this);

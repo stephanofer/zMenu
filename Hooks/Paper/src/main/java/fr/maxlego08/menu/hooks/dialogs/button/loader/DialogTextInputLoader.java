@@ -2,9 +2,9 @@ package fr.maxlego08.menu.hooks.dialogs.button.loader;
 
 import fr.maxlego08.menu.api.button.Button;
 import fr.maxlego08.menu.api.button.DefaultButtonValue;
-import fr.maxlego08.menu.api.button.dialogs.InputButton;
-import fr.maxlego08.menu.api.enums.dialog.DialogInputType;
 import fr.maxlego08.menu.api.loader.ButtonLoader;
+import fr.maxlego08.menu.api.localization.LocalizedText;
+import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.hooks.dialogs.button.buttons.ZDialogTextInput;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -26,6 +26,13 @@ public class DialogTextInputLoader extends ButtonLoader {
         int multilineMaxLines = configuration.getInt(path + ".multiline.max-lines");
         int multilineHeight = configuration.getInt(path + ".multiline.height", 20);
 
-        return new ZDialogTextInput(label, labelVisible, defaultValue, width, maxLength, multilineMaxLines, multilineHeight);
+        return (Button) new ZDialogTextInput(label, labelVisible, defaultValue, width, maxLength, multilineMaxLines, multilineHeight)
+                .setLocalizedLabel(localizedText(configuration, path + ".label", label))
+                .setLocalizedDefaultText(localizedText(configuration, path + ".default-value", defaultValue));
+    }
+
+    private LocalizedText localizedText(YamlConfiguration configuration, String path, String legacyValue) {
+        Object object = configuration.isConfigurationSection(path) ? configuration.getConfigurationSection(path) : configuration.get(path);
+        return LocalizedTextParser.text(object, legacyValue);
     }
 }
