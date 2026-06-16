@@ -1,6 +1,5 @@
 package fr.maxlego08.menu.hooks.dialogs.loader;
 
-import fr.maxlego08.menu.api.DialogInventory;
 import fr.maxlego08.menu.api.InventoryOption;
 import fr.maxlego08.menu.api.MenuPlugin;
 import fr.maxlego08.menu.api.button.Button;
@@ -10,6 +9,7 @@ import fr.maxlego08.menu.api.configuration.Configuration;
 import fr.maxlego08.menu.api.enums.dialog.DialogType;
 import fr.maxlego08.menu.api.exceptions.InventoryButtonException;
 import fr.maxlego08.menu.api.exceptions.InventoryException;
+import fr.maxlego08.menu.api.inventory.dialog.DialogInventory;
 import fr.maxlego08.menu.api.localization.LocalizedText;
 import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.api.requirement.Requirement;
@@ -58,7 +58,7 @@ public class DialogLoader implements Loader<DialogInventory> {
         String typeString = configuration.getString("type", "NOTICE");
         DialogType dialogType;
         try {
-            dialogType = DialogType.valueOf(typeString.toUpperCase());
+            dialogType = DialogType.valueOf(typeString.toUpperCase(Locale.ROOT));
             dialogInventory.setDialogType(dialogType);
         } catch (IllegalArgumentException e) {
             throw new InventoryException("Invalid dialog type: " + typeString);
@@ -66,7 +66,7 @@ public class DialogLoader implements Loader<DialogInventory> {
 
         String afterActionString = configuration.getString("after-action", "CLOSE");
         try {
-            dialogInventory.setAfterAction(afterActionString.toUpperCase());
+            dialogInventory.setAfterAction(afterActionString.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
             throw new InventoryException("Invalid after action: " + afterActionString);
         }
@@ -225,6 +225,21 @@ public class DialogLoader implements Loader<DialogInventory> {
                     dialogInventory.addActionButton(record);
                 }
                 dialogInventory.setNumberOfColumns(numberOfColumns);
+                if (configuration.isConfigurationSection("exit-button")){
+                    ConfigurationSection exitSection = configuration.getConfigurationSection("exit-button");
+                    if (exitSection == null) {
+                        return;
+                    }
+                    String exitText = exitSection.getString("text", "Exit");
+                    String exitTooltip = exitSection.getString("tooltip", "Exit the dialog");
+                    int exitWidth = exitSection.getInt("width", 100);
+                    List<Requirement> exitRequirements = this.loadRequirements(configuration, "exit-button.actions", file);
+                    ActionButtonRecord exitRecord = new ActionButtonRecord(exitText, exitTooltip, exitWidth, exitRequirements,
+                            this.localizedText(configuration, "exit-button.text", exitText),
+                            this.localizedText(configuration, "exit-button.tooltip", exitTooltip));
+                    dialogInventory.setExitActionButton(exitRecord);
+                }
+
             }
             case SERVER_LINKS -> {
                 String text = configuration.getString("server-links.text", "");
@@ -235,7 +250,7 @@ public class DialogLoader implements Loader<DialogInventory> {
                 ActionButtonRecord record = new ActionButtonRecord(text, tooltip, width, requirement,
                         this.localizedText(configuration, "server-links.text", text),
                         this.localizedText(configuration, "server-links.tooltip", tooltip));
-                dialogInventory.setActionButtonServerLink(record);
+                dialogInventory.setExitActionButton(record);
                 dialogInventory.setNumberOfColumns(numberOfColumns);
             }
         }

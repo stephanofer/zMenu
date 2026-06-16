@@ -1,5 +1,6 @@
 package fr.maxlego08.menu.loader.actions;
 
+import fr.maxlego08.menu.api.annotations.AutoActionLoader;
 import fr.maxlego08.menu.api.loader.ActionLoader;
 import fr.maxlego08.menu.api.localization.LocalizedTextList;
 import fr.maxlego08.menu.api.localization.LocalizedTextParser;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+@AutoActionLoader
 public class MessageLoader extends ActionLoader {
 
     public MessageLoader() {

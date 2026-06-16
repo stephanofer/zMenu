@@ -12,6 +12,7 @@ import fr.maxlego08.menu.zcore.utils.commands.CommandType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public class CommandMenuReloadInventory extends VCommand {
@@ -23,7 +24,7 @@ public class CommandMenuReloadInventory extends VCommand {
         this.addOptionalArg("menu", (a, b) -> {
             List<String> menus = new ArrayList<>();
             for (Inventory inventory : plugin.getInventoryManager().getInventories()) {
-                menus.add((inventory.getPlugin().getName() + ":" + inventory.getFileName()).toLowerCase());
+                menus.add((inventory.getPlugin().getName() + ":" + inventory.getFileName()).toLowerCase(Locale.ROOT));
             }
             return menus;
         });

@@ -4,9 +4,9 @@ import fr.maxlego08.menu.api.MenuPlugin;
 import fr.maxlego08.menu.api.localization.LocalizationManager;
 import fr.maxlego08.menu.api.utils.EnumInventory;
 import fr.maxlego08.menu.api.utils.Message;
+import fr.maxlego08.menu.api.utils.version.MinecraftVersion;
 import fr.maxlego08.menu.common.enums.Permission;
 import fr.maxlego08.menu.common.utils.nms.NMSUtils;
-import fr.maxlego08.menu.common.utils.nms.NmsVersion;
 import fr.maxlego08.menu.zcore.logger.Logger;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -46,7 +46,7 @@ public abstract class ZUtils extends MessageUtils {
     private static Material[] byId;
 
     static {
-        if (!NmsVersion.nmsVersion.isNewMaterial()) {
+        if (!MinecraftVersion.getCurrentVersion().isAtLeast(MinecraftVersion.parse("1.13"))) {
             byId = new Material[0];
             for (Material material : Material.values()) {
                 if (byId.length <= material.getId()) {
@@ -58,7 +58,15 @@ public abstract class ZUtils extends MessageUtils {
     }
 
     protected String findPlayerLocale(Player player) {
-        return LocalizationManager.resolveLanguage(player);
+        if (MinecraftVersion.getCurrentVersion().isAtLeast(MinecraftVersion.parse("1.13"))) {
+            try {
+                String language = LocalizationManager.resolveLanguage(player);
+                return language != null && !language.isBlank() ? language : player != null ? player.getLocale() : null;
+            } catch (Exception exception) {
+                return null;
+            }
+        }
+        return null;
     }
 
     protected int parseInt(String value, int defaultValue) {
@@ -207,8 +215,8 @@ public abstract class ZUtils extends MessageUtils {
      * @return the formatted name
      */
     protected String name(String string) {
-        String name = string.replace("_", " ").toLowerCase();
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
+        String name = string.replace("_", " ").toLowerCase(Locale.ROOT);
+        return name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
     }
 
     /**
@@ -218,8 +226,8 @@ public abstract class ZUtils extends MessageUtils {
      * @return the formatted name
      */
     protected String name(Material string) {
-        String name = string.name().replace("_", " ").toLowerCase();
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
+        String name = string.name().replace("_", " ").toLowerCase(Locale.ROOT);
+        return name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
     }
 
     /**
@@ -446,7 +454,7 @@ public abstract class ZUtils extends MessageUtils {
 
     protected Object getPrivateField(Object object, String field) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         Class<?> clazz = object.getClass();
-        Field objectField = field.equals("commandMap") ? clazz.getDeclaredField(field) : field.equals("knownCommands") ? NmsVersion.nmsVersion.isNewMaterial() ? clazz.getSuperclass().getDeclaredField(field) : clazz.getDeclaredField(field) : null;
+        Field objectField = field.equals("commandMap") ? clazz.getDeclaredField(field) : field.equals("knownCommands") ? MinecraftVersion.getCurrentVersion().isAtLeast(MinecraftVersion.parse("1.13")) ? clazz.getSuperclass().getDeclaredField(field) : clazz.getDeclaredField(field) : null;
         objectField.setAccessible(true);
         Object result = objectField.get(object);
         objectField.setAccessible(false);
