@@ -23,6 +23,7 @@ public class DialogSingleOptionInputLoader extends ButtonLoader {
     @Override
     public Button load(@NonNull YamlConfiguration configuration, @NonNull String path, @NonNull DefaultButtonValue defaultButtonValue) {
 
+        int width = configuration.getInt(path + ".width", 200);
         String label = configuration.getString(path + ".label", "");
         boolean labelVisible = configuration.getBoolean(path + ".label-visible", true);
         List<SingleOption> singleOptionList = new ArrayList<>();
@@ -46,8 +47,10 @@ public class DialogSingleOptionInputLoader extends ButtonLoader {
                 singleOptionList.add(singleOption);
             }
         }
-        return (Button) new ZDialogSingleOptionInput(label, labelVisible, singleOptionList)
-                .setLocalizedLabel(localizedText(configuration, path + ".label", label));
+        ZDialogSingleOptionInput zDialogSingleOptionInput = new ZDialogSingleOptionInput(label, labelVisible, singleOptionList);
+        zDialogSingleOptionInput.setWidth(width);
+        zDialogSingleOptionInput.setLocalizedLabel(localizedText(configuration, path + ".label", label));
+        return zDialogSingleOptionInput;
     }
 
     private LocalizedText localizedText(YamlConfiguration configuration, String path, String legacyValue) {

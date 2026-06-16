@@ -1,5 +1,6 @@
 package fr.maxlego08.menu.loader.actions;
 
+import fr.maxlego08.menu.api.annotations.AutoActionLoader;
 import fr.maxlego08.menu.api.loader.ActionLoader;
 import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.api.requirement.Action;
@@ -9,6 +10,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 
+@AutoActionLoader
 public class TitleLoader extends ActionLoader {
 
     public TitleLoader() {

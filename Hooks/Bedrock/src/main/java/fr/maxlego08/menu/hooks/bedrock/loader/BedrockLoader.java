@@ -1,6 +1,5 @@
 package fr.maxlego08.menu.hooks.bedrock.loader;
 
-import fr.maxlego08.menu.api.BedrockInventory;
 import fr.maxlego08.menu.api.InventoryOption;
 import fr.maxlego08.menu.api.MenuPlugin;
 import fr.maxlego08.menu.api.button.Button;
@@ -9,6 +8,7 @@ import fr.maxlego08.menu.api.button.dialogs.InputButton;
 import fr.maxlego08.menu.api.enums.bedrock.BedrockType;
 import fr.maxlego08.menu.api.exceptions.InventoryButtonException;
 import fr.maxlego08.menu.api.exceptions.InventoryException;
+import fr.maxlego08.menu.api.inventory.bedrock.BedrockInventory;
 import fr.maxlego08.menu.api.localization.LocalizedText;
 import fr.maxlego08.menu.api.localization.LocalizedTextParser;
 import fr.maxlego08.menu.api.requirement.Requirement;
@@ -22,10 +22,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public class BedrockLoader implements Loader<BedrockInventory> {
@@ -51,7 +48,7 @@ public class BedrockLoader implements Loader<BedrockInventory> {
         String typeString = configuration.getString("type", "SIMPLE");
         BedrockType bedrockType;
         try {
-            bedrockType = BedrockType.valueOf(typeString.toUpperCase());
+            bedrockType = BedrockType.valueOf(typeString.toUpperCase(Locale.ROOT));
             bedrockInventory.setBedrockType(bedrockType);
         } catch (IllegalArgumentException e) {
             throw new InventoryException("Invalid dialog type: " + typeString);
