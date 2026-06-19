@@ -6,6 +6,8 @@ website: https://groupez.dev/resources/zmenu.253
 version: ${version}
 api-version: 1.19
 contributors: [ mani1232, lijinhong11, Adreez, EnzoShoes, Noltox, saildrag, alwyn974, 1robie, Funasitien ]
+depend:
+  - NetworkPlayerSettings
 softdepend:
   - HeadDatabase
   - PlaceholderAPI
@@ -25,7 +27,6 @@ softdepend:
   - floodgate
   - Geyser-Spigot
   - MMOItems
-  - NetworkPlayerSettings
 folia-supported: true
 loadbefore:
   - SuperiorSkyblock2

@@ -191,7 +191,7 @@ public class ZMenuPlugin extends ZPlugin implements MenuPlugin {
 
         this.loadGlobalPlaceholders();
 
-        new NetworkPlayerSettingsLocalizationBridge(this).register();
+        NetworkPlayerSettingsLocalizationBridge.require(this).register();
 
         this.zCommandManager = new VCommandManager(this);
         this.vinventoryManager = new VInventoryManager(this);

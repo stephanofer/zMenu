@@ -1,60 +1,54 @@
 package fr.maxlego08.menu.localization;
 
+import com.stephanofer.networkplayersettings.api.PlayerSettingsService;
+import com.stephanofer.networkplayersettings.api.SettingKey;
+import com.stephanofer.networkplayersettings.event.PlayerSettingChangeEvent;
+import com.stephanofer.networkplayersettings.event.PlayerSettingsReadyEvent;
 import fr.maxlego08.menu.ZMenuPlugin;
 import fr.maxlego08.menu.api.localization.LocalizationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.EventExecutor;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.lang.reflect.Method;
-import java.util.UUID;
+import java.util.Objects;
 
 public final class NetworkPlayerSettingsLocalizationBridge implements Listener {
 
     private final ZMenuPlugin plugin;
+    private final PlayerSettingsService settingsService;
 
-    public NetworkPlayerSettingsLocalizationBridge(ZMenuPlugin plugin) {
-        this.plugin = plugin;
+    private NetworkPlayerSettingsLocalizationBridge(ZMenuPlugin plugin, PlayerSettingsService settingsService) {
+        this.plugin = Objects.requireNonNull(plugin, "plugin");
+        this.settingsService = Objects.requireNonNull(settingsService, "settingsService");
+    }
+
+    public static NetworkPlayerSettingsLocalizationBridge require(ZMenuPlugin plugin) {
+        RegisteredServiceProvider<PlayerSettingsService> provider = plugin.getServer().getServicesManager().getRegistration(PlayerSettingsService.class);
+        if (provider == null || provider.getProvider() == null) {
+            throw new IllegalStateException("Missing required Bukkit service: " + PlayerSettingsService.class.getName());
+        }
+        return new NetworkPlayerSettingsLocalizationBridge(plugin, provider.getProvider());
     }
 
     public void register() {
-        LocalizationManager.setResolver(new NetworkPlayerSettingsLanguageResolver());
-        this.registerEvent("com.stephanofer.networkplayersettings.event.PlayerSettingsReadyEvent", this::handleReadyEvent);
-        this.registerEvent("com.stephanofer.networkplayersettings.event.PlayerSettingChangeEvent", this::handleChangeEvent);
+        LocalizationManager.setResolver(new NetworkPlayerSettingsLanguageResolver(this.settingsService));
+        Bukkit.getPluginManager().registerEvents(this, this.plugin);
     }
 
-    @SuppressWarnings("unchecked")
-    private void registerEvent(String className, EventExecutor executor) {
-        try {
-            Class<?> rawClass = Class.forName(className);
-            if (Event.class.isAssignableFrom(rawClass)) {
-                Bukkit.getPluginManager().registerEvent((Class<? extends Event>) rawClass, this, EventPriority.MONITOR, executor, this.plugin, true);
-            }
-        } catch (ClassNotFoundException ignored) {
-        }
+    @EventHandler
+    public void onPlayerSettingsReady(PlayerSettingsReadyEvent event) {
+        this.refresh(event.player());
     }
 
-    private void handleReadyEvent(Listener listener, Event event) {
-        Player player = this.invoke(event, "player", Player.class);
-        if (player != null) {
-            this.refresh(player);
-        }
-    }
-
-    private void handleChangeEvent(Listener listener, Event event) {
-        Object settingKey = this.invoke(event, "settingKey", Object.class);
-        if (settingKey == null || !"LANGUAGE".equalsIgnoreCase(String.valueOf(settingKey))) {
+    @EventHandler
+    public void onPlayerSettingChange(PlayerSettingChangeEvent event) {
+        if (event.settingKey() != SettingKey.LANGUAGE) {
             return;
         }
-        UUID playerId = this.invoke(event, "playerId", UUID.class);
-        if (playerId == null) {
-            return;
-        }
-        LocalizationManager.invalidate(playerId);
-        Player player = Bukkit.getPlayer(playerId);
+        LocalizationManager.invalidate(event.playerId());
+        Player player = Bukkit.getPlayer(event.playerId());
         if (player != null) {
             this.refresh(player);
         }
@@ -67,15 +61,5 @@ public final class NetworkPlayerSettingsLocalizationBridge implements Listener {
                 this.plugin.getInventoryManager().updateInventory(player);
             }
         });
-    }
-
-    private <T> T invoke(Event event, String methodName, Class<T> type) {
-        try {
-            Method method = event.getClass().getMethod(methodName);
-            Object value = method.invoke(event);
-            return type.isInstance(value) ? type.cast(value) : null;
-        } catch (ReflectiveOperationException | RuntimeException ignored) {
-            return null;
-        }
     }
 }
