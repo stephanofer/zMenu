@@ -137,7 +137,7 @@ dependencies {
     api(projects.api)
     api(projects.common)
     api(projects.hooks)
-    compileOnly("com.stephanofer:networkplayersettings:1.0.0-SNAPSHOT")
+    compileOnly("com.stephanofer:networkplayersettings:2.0.0")
     implementation(projects.nms.base)
     implementation(projects.nms.v121R1)
     implementation(projects.nms.v120R4)

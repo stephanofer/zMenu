@@ -1,26 +1,36 @@
 package fr.maxlego08.menu.localization;
 
-import com.stephanofer.networkplayersettings.api.PlayerSettingsService;
+import com.stephanofer.networkplayersettings.settings.api.PlayerSettingsService;
 import fr.maxlego08.menu.api.configuration.Configuration;
 import fr.maxlego08.menu.api.localization.LocalizationManager;
 import fr.maxlego08.menu.api.localization.PlayerLanguageResolver;
+import java.util.Objects;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
-public final class NetworkPlayerSettingsLanguageResolver implements PlayerLanguageResolver {
+public final class NetworkPlayerSettingsLanguageResolver
+    implements PlayerLanguageResolver
+{
 
     private final PlayerSettingsService settingsService;
 
-    public NetworkPlayerSettingsLanguageResolver(PlayerSettingsService settingsService) {
-        this.settingsService = Objects.requireNonNull(settingsService, "settingsService");
+    public NetworkPlayerSettingsLanguageResolver(
+        PlayerSettingsService settingsService
+    ) {
+        this.settingsService = Objects.requireNonNull(
+            settingsService,
+            "settingsService"
+        );
     }
 
     @Override
     public @Nullable String resolve(@Nullable Player player) {
-        if (player == null || !player.isOnline() || !this.settingsService.isReady(player.getUniqueId())) {
+        if (
+            player == null ||
+            !player.isOnline() ||
+            !this.settingsService.isReady(player.getUniqueId())
+        ) {
             return this.defaultLanguage();
         }
         return this.settingsService.resolvedLanguage(player).code();
@@ -28,6 +38,9 @@ public final class NetworkPlayerSettingsLanguageResolver implements PlayerLangua
 
     @Override
     public @NotNull String defaultLanguage() {
-        return LocalizationManager.normalize(Configuration.defaultLanguage, "en");
+        return LocalizationManager.normalize(
+            Configuration.defaultLanguage,
+            "en"
+        );
     }
 }
