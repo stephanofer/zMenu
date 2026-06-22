@@ -1,6 +1,7 @@
 package fr.maxlego08.menu.hooks;
 
 import com.google.common.base.Preconditions;
+import com.hera.craftkit.paper.minimessage.CraftKitMiniMessageTags;
 import fr.maxlego08.menu.api.MenuPlugin;
 import fr.maxlego08.menu.api.utils.LoreType;
 import fr.maxlego08.menu.api.utils.PaperMetaUpdater;
@@ -60,6 +61,7 @@ public class ComponentMeta extends MiniMessageColorUtils implements PaperMetaUpd
         this.inventoryTypeMethod.setAccessible(true);
 
         this.withStandardTags();
+        this.withTagResolver(CraftKitMiniMessageTags.playerHead());
         this.buildMiniMessage();
     }
 
@@ -95,14 +97,14 @@ public class ComponentMeta extends MiniMessageColorUtils implements PaperMetaUpd
 
     @Override
     public @NonNull Component getComponent(String text) {
-        return this.cache.get(text, ()->this.MINI_MESSAGE.deserialize(this.colorMiniMessage(text)));
+        return this.cache.get(text, ()->this.MINI_MESSAGE.deserialize(this.applyDefaultWhiteIfMissing(this.colorMiniMessage(text))));
     }
 
     private void updateDisplayName(ItemMeta itemMeta, String text) {
         Component component = this.cache.get(text, () -> {
             // Fixed text becomes italic automatically
             // From GitHub issue #62
-            return this.RESET.append(this.MINI_MESSAGE.deserialize(this.colorMiniMessage(text)).decoration(TextDecoration.ITALIC, this.getState(text)));
+            return this.RESET.append(this.MINI_MESSAGE.deserialize(this.applyDefaultWhiteIfMissing(this.colorMiniMessage(text))).decoration(TextDecoration.ITALIC, this.getState(text)));
         });
         try {
             this.nameMethod.invoke(itemMeta, component);
@@ -139,7 +141,7 @@ public class ComponentMeta extends MiniMessageColorUtils implements PaperMetaUpd
             Component component = this.cache.get(text, () -> {
                 // Fixed text becomes italic automatically
                 // From GitHub issue #62
-                return this.RESET.append(this.MINI_MESSAGE.deserialize(this.colorMiniMessage(text)).decoration(TextDecoration.ITALIC, this.getState(text)));
+                return this.RESET.append(this.MINI_MESSAGE.deserialize(this.applyDefaultWhiteIfMissing(this.colorMiniMessage(text))).decoration(TextDecoration.ITALIC, this.getState(text)));
             });
             components.add(component);
         }

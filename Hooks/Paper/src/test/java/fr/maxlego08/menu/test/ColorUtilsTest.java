@@ -438,4 +438,28 @@ public class ColorUtilsTest extends MiniMessageColorUtils {
         String expected = "<color:#FF5555>This is a <color:#55FF55>test!";
         Assertions.assertEquals(expected, this.colorMiniMessage(input));
     }
+
+    @Test
+    @DisplayName("Apply white as default when no color is provided")
+    void testApplyDefaultWhiteWithoutExplicitColor() {
+        String input = "Hola mundo";
+        String expected = "<white>Hola mundo";
+        Assertions.assertEquals(expected, this.applyDefaultWhiteIfMissing(this.colorMiniMessage(input)));
+    }
+
+    @Test
+    @DisplayName("Do not override existing explicit colors")
+    void testApplyDefaultWhiteDoesNotOverrideExplicitColor() {
+        String input = "&aHola mundo";
+        String expected = "<green>Hola mundo";
+        Assertions.assertEquals(expected, this.applyDefaultWhiteIfMissing(this.colorMiniMessage(input)));
+    }
+
+    @Test
+    @DisplayName("Apply white before CraftKit tag when no text color is provided")
+    void testApplyDefaultWhiteWithCraftKitTag() {
+        String input = "<craftkit_head:abc123> VIP";
+        String expected = "<white><craftkit_head:abc123> VIP";
+        Assertions.assertEquals(expected, this.applyDefaultWhiteIfMissing(this.colorMiniMessage(input)));
+    }
 }

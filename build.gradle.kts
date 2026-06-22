@@ -151,6 +151,7 @@ tasks {
         relocate("fr.traqueur.currencies", "fr.maxlego08.menu.hooks.currencies")
         relocate("de.tr7zw.changeme.nbtapi", "fr.maxlego08.menu.hooks.nbtapi")
         relocate("com.cryptomorin.xseries", "fr.maxlego08.menu.hooks.xseries")
+        relocate("com.hera.craftkit", "fr.maxlego08.menu.hooks.craftkit")
         relocate("fr.maxlego08.sarah", "fr.maxlego08.menu.hooks.sarah")
         relocate("net.objecthunter.exp4j", "fr.maxlego08.menu.hooks.exp4j")
 

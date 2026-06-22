@@ -8,4 +8,9 @@ dependencies {
     compileOnly(projects.common)
     compileOnly(libs.adventure.text.minimessage)
     compileOnly(libs.paper.api)
+    implementation(libs.craftkit.paper)
+
+    testImplementation(libs.adventure.api)
+    testImplementation(libs.adventure.text.minimessage)
+    testImplementation(libs.paper.api)
 }

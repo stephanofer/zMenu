@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 public class MiniMessageColorUtils {
     private static final Pattern LEGACY_HEX_PATTERN = Pattern.compile("§x(§[0-9a-fA-F]){6}");
     private static final Pattern HEX_SHORT_PATTERN = Pattern.compile("(?<!<)(?<!:)(?<!</)(&?)#([a-fA-F0-9]{6})");
+    private static final Pattern COLOR_TAG_PATTERN = Pattern.compile("<(#[A-Fa-f0-9]{6}|black|dark_blue|dark_green|dark_aqua|dark_red|dark_purple|gold|gray|dark_gray|blue|green|aqua|red|light_purple|yellow|white|color:[^>]+|gradient(?::[^>]+)?|rainbow(?::[^>]+)?)>", Pattern.CASE_INSENSITIVE);
     private final Map<String, String> COLORS_MAPPINGS = Map.ofEntries(
             Map.entry("0", "black"),
             Map.entry("1", "dark_blue"),
@@ -50,6 +51,13 @@ public class MiniMessageColorUtils {
         newMessage = this.replaceLegacyColors(newMessage);
 
         return newMessage;
+    }
+
+    protected String applyDefaultWhiteIfMissing(String message) {
+        if (message == null || message.isEmpty() || COLOR_TAG_PATTERN.matcher(message).find()) {
+            return message;
+        }
+        return "<white>" + message;
     }
 
     private @NotNull String convertLegacyHex(String message) {
